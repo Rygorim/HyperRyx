@@ -1,0 +1,34 @@
+import robocode.*;
+
+public class HyperHyx extends AdvancedRobot {
+
+    public void run() {
+        setBodyColor(java.awt.Color.green); // You can customize the color!
+        setGunColor(java.awt.Color.black);
+        setRadarColor(java.awt.Color.blue);
+
+        while (true) {
+            turnRadarRight(360); // Continuously scan for enemies
+            setTurnGunRight(normalizeBearing(scanDirection)); // Keep gun facing enemy
+
+            // Basic movement - replace with your own strategy!
+            setAhead((Math.random() - 0.5) * 100); // Move in a random pattern
+            setTurnRight((Math.random() - 0.5) * 20);
+
+            // Fire at enemies!
+            if (scanDistance > 0) {
+                fire(Math.min(3, getEnergy() / 4)); // Adjust fire power based on energy
+            }
+        }
+    }
+
+    public double normalizeBearing(double angle) {
+        while (angle > 180) {
+            angle -= 360;
+        }
+        while (angle < -180) {
+            angle += 360;
+        }
+        return angle;
+    }
+}
