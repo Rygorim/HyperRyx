@@ -1,0 +1,54 @@
+import robocode.*;
+import java.awt.Color;
+
+public class HyperLegendy extends AdvancedRobot {
+    private Color normalGunColor = Color.BLUE; // Cor normal do canhão
+
+    public void run() {
+        // Definir a cor do robô
+        setBodyColor(Color.YELLOW);
+        setGunColor(normalGunColor); // Definir a cor normal do canhão
+        setRadarColor(Color.YELLOW);
+        setScanColor(Color.WHITE);
+        setBulletColor(Color.RED);
+
+        // Loop principal do robô
+        while (true) {
+            // Andar pelas paredes
+            crawlWalls();
+
+            // Procurar e atirar em inimigos
+            scan();
+            turnGunRight(360);
+            fire(1); // Disparar o tiro
+            setGunColor(Color.DARK_GRAY); // Deixar o canhão mais escuro durante o tiro
+            execute(); // Executar o tiro
+            setGunColor(normalGunColor); // Voltar a cor normal do canhão
+        }
+    }
+
+    private void crawlWalls() {
+        // Obter a posição atual do robô
+        double x = getX();
+        double y = getY();
+
+        // Verificar se o robô está próximo das paredes
+        if (x < 50 || x > getBattleFieldWidth() - 50 || y < 50 || y > getBattleFieldHeight() - 50) {
+            // Mover-se paralelamente à parede mais próxima
+            if (x < 50) {
+                setTurnRight(90);
+            } else if (x > getBattleFieldWidth() - 50) {
+                setTurnLeft(90);
+            } else if (y < 50) {
+                setTurnRight(90);
+            } else {
+                setTurnLeft(90);
+            }
+            setAhead(100);
+        } else {
+            // Mover-se aleatoriamente pelo campo de batalha
+            setTurnRight(Math.random() * 360);
+            setAhead(100);
+        }
+    }
+}
