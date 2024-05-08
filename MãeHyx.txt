@@ -1,9 +1,9 @@
-package maeHyx;
+package Josilaine;
 
 import robocode.*;
 import java.awt.Color;
 
-public class MãeHyx extends AdvancedRobot {
+public class Josilaine extends AdvancedRobot {
 
     public void run() {
         // Definir as cores do robô
