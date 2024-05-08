@@ -1,0 +1,40 @@
+package maeHyx;
+
+import robocode.*;
+import java.awt.Color;
+
+public class MãeHyx extends AdvancedRobot {
+
+    public void run() {
+        // Definir as cores do robô
+        setBodyColor(new Color(255, 192, 203)); // Rosa
+        setGunColor(new Color(0, 0, 255)); // Azul
+        setBulletColor(new Color(255, 0, 0)); // Vermelho
+
+        // Configurar o movimento do robô
+        setAdjustRadarForGunTurn(true);
+        setAdjustGunForRobotTurn(true);
+
+        while (true) {
+            // Mover o robô pelas paredes
+            ahead(100);
+            turnRight(90);
+        }
+    }
+
+    public void onScannedRobot(ScannedRobotEvent e) {
+        // Disparar o canhão
+        turnGunRight(e.getBearing());
+        fire(2);
+
+        // Escurecer temporariamente o canhão
+        setGunColor(new Color(0, 0, 100));
+        execute();
+        setGunColor(new Color(0, 0, 255));
+    }
+
+    public void onHitWall(HitWallEvent e) {
+        // Ricochetear ao bater na parede
+        turnRight(90);
+    }
+}
