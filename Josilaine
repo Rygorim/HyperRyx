@@ -1,40 +1,82 @@
-package Josilaine;
-
 import robocode.*;
 import java.awt.Color;
+import java.awt.Graphics2D;
 
+// Nome do seu robô: Josilaine
 public class Josilaine extends AdvancedRobot {
-
+    
+    // Método principal de execução
     public void run() {
-        // Definir as cores do robô
-        setBodyColor(new Color(255, 192, 203)); // Rosa
-        setGunColor(new Color(0, 0, 255)); // Azul
-        setBulletColor(new Color(255, 0, 0)); // Vermelho
-
-        // Configurar o movimento do robô
-        setAdjustRadarForGunTurn(true);
-        setAdjustGunForRobotTurn(true);
-
+        // Definindo cores do robô para amarelo
+        setColors(Color.pink, Color.blue, Color.green);
+        
+        // Definindo a velocidade do robô
+        setMaxVelocity(8);
+        
+        // Loop principal
         while (true) {
-            // Mover o robô pelas paredes
-            ahead(100);
-            turnRight(90);
+            // Movimento: avança indefinidamente
+            ahead(Double.POSITIVE_INFINITY);
         }
     }
 
+    // Método chamado quando o robô avista um inimigo
     public void onScannedRobot(ScannedRobotEvent e) {
-        // Disparar o canhão
-        turnGunRight(e.getBearing());
-        fire(2);
-
-        // Escurecer temporariamente o canhão
-        setGunColor(new Color(0, 0, 100));
+        // Verifica se o inimigo está à frente
+        if (e.getBearing() >= -90 && e.getBearing() <= 90) {
+            // Gira o robô para mirar no inimigo
+            setTurnRight(e.getBearing());
+            
+            // Se o inimigo estiver muito próximo, recua
+            if (e.getDistance() < 200) {
+                setBack(50);
+            } else {
+                // Avança em direção ao inimigo
+                setAhead(e.getDistance() - 150);
+            }
+            
+            // Ajusta a mira para acertar o inimigo
+            setTurnGunRight(getHeading() - getGunHeading() + e.getBearing());
+            
+            // Dispara um tiro
+            fire(3);
+        } else {
+            // Se o inimigo estiver atrás, gira o robô para encará-lo
+            setTurnRight(e.getBearing() - 90);
+            
+            // Se o inimigo estiver muito próximo, recua
+            if (e.getDistance() < 200) {
+                setBack(50);
+            } else {
+                // Avança em direção ao inimigo
+                setAhead(e.getDistance() - 150);
+            }
+            
+            // Ajusta a mira para acertar o inimigo
+            setTurnGunRight(getHeading() - getGunHeading() + e.getBearing());
+            
+            // Dispara um tiro
+            fire(3);
+        }
+        
+        // Executa uma verificação após o ataque para evitar colisões
         execute();
-        setGunColor(new Color(0, 0, 255));
     }
-
+    
+    // Método chamado quando o robô colide com uma parede
     public void onHitWall(HitWallEvent e) {
-        // Ricochetear ao bater na parede
-        turnRight(90);
+        // Executa uma manobra para se afastar da parede
+        setTurnRight(90);
+        setBack(100);
+    }
+    
+    // Método chamado para desenhar o tiro
+    public void onPaint(Graphics2D g) {
+        // Define a cor do raio (por exemplo, azul claro)
+        g.setColor(Color.cyan);
+        
+        // Desenha uma linha representando o raio do tiro
+        g.drawLine((int)getX(), (int)getY(), (int)(getX() + Math.sin(getGunHeadingRadians()) * 1000),
+                   (int)(getY() + Math.cos(getGunHeadingRadians()) * 1000));
     }
 }
